@@ -1,10 +1,11 @@
 # csv-reproject
 
-A command line tool to reproject a CSV from one CRS to another.
+A command line tool to reproject a CSV from one Coordinate Reference System to
+another.
 
 ## Example
 
-Imagine the following CSV file, which some annoying columns:
+Imagine the following CSV file with some annoying columns:
 
 ```
 Id,Name,Easting/Northing
@@ -13,7 +14,7 @@ Id,Name,Easting/Northing
 30,Carol," 266645,845032"
 ```
 
-To re-project these coordinates, the following command should be run:
+To re-project these coordinates, one can run the following command:
 
 ```
 csv-reproject \
@@ -29,4 +30,4 @@ csv-reproject \
 ```
 
 This will modify the file to have two new columns called `Longitude` and
-`Latitude`.
+`Latitude` which can now easily be imported into software like JOSM!
