@@ -1,5 +1,8 @@
-test-example:
-	./csv-reproject \
+install:
+	python setup.py install
+
+test-example: install
+	csv-reproject \
 	--from-proj="epsg:27700" \
 	--from-x-column="Easting/Northing" \
 	--from-x-format=" (-?[0-9.]+),.*" \
@@ -11,5 +14,5 @@ test-example:
 	example/myData.csv \
 	example/myData-transformed.csv
 
-test-help:
-	./csv-reproject --help
+test-help: install
+	csv-reproject --help

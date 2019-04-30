@@ -1,6 +1,8 @@
 import click
 from pyproj import Proj, transform
 
+from csv_reproject import CsvProjReader, CsvProjWriter
+
 
 @click.command()
 @click.option('--from-proj', default='EPSG:4326',
@@ -38,83 +40,36 @@ def cli(
     from_proj = Proj(init=from_proj)
     to_proj = Proj(init=to_proj)
 
-    # Todo: Create CsvProjReader class with:
-    # - __init(
-    #   input_filename: str,
-    #   from_x_column: str,
-    #   from_y_column: str,
-    #   from_x_format: str,
-    #   from_y_format: str
-    # )
-    #   - Throw exception if x and y columns do not exist in the CSV's header.
-    #   -
-    # - read_headers() -> List[str]
-    # - read_proj_rows() -> List[CsvProjRow] (Generator)
+    with open(input_filename) as input_file, \
+            open(output_filename, 'w') as output_file:
 
-    # Todo: Create CsvProjRow class with:
-    # - get_values() -> List[str]
-    # - get_x_value() -> float
-    # - get_y_value() -> float
-
-    # Todo: Create Reprojector class with:
-    # Todo: Perhaps this already exists as pyproj.Transformer?
-    # - init(
-    #   from_proj: Proj
-    #   to_proj: Proj
-    # )
-    # - transform(x: float, y: float) -> Tuple[x: float, y: float]
-
-    # Todo: Create CsvProjWriter class with:
-    # - __init(
-    #   output_filename: str,
-    #   to_x_header: str,
-    #   to_y_header: str
-    # )
-    # - write_headers(header: List[str])
-    # - write_row(row: List[str], x: float, y: float)
-
-    print(
-        from_proj,
-        from_x_column,
-        from_y_column,
-        from_x_format,
-        from_y_format,
-        to_proj,
-        to_x_header,
-        to_y_header,
-        input_filename,
-        output_filename
-    )
-
-    exit()
-
-    reader = CsvProjReader(
-        input_filename,
-        from_x_column,
-        from_y_column,
-        from_x_format,
-        from_y_format
-    )
-
-    writer = CsvProjWriter(
-        output_filename,
-        to_x_header,
-        to_y_header
-    )
-
-    input_headers = reader.read_headers()
-    writer.write_headers(input_headers)
-
-    for csv_proj_row in reader.read_proj_rows():
-        new_x, new_y = transform(
-            from_proj,
-            to_proj,
-            csv_proj_row.get_x_value(),
-            csv_proj_row.get_y_value()
+        reader = CsvProjReader(
+            input_file,
+            from_x_column,
+            from_y_column,
+            from_x_format,
+            from_y_format
         )
-        writer.write_row(csv_proj_row.get_values(), new_x, new_y)
 
+        writer = CsvProjWriter(
+            output_file,
+            to_x_header,
+            to_y_header
+        )
 
+        input_headers = reader.read_headers()
+        writer.write_headers(input_headers)
+
+        for csv_proj_row in reader.read_proj_rows():
+            new_x, new_y = [None, None]
+            if csv_proj_row.x is not None and csv_proj_row.x is not None:
+                new_x, new_y = transform(
+                    from_proj,
+                    to_proj,
+                    csv_proj_row.x,
+                    csv_proj_row.y
+                )
+            writer.write_row(csv_proj_row.row, new_x, new_y)
 
 
 if __name__ == '__main__':

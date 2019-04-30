@@ -1,1 +1,0 @@
-python csv_reproject/cli.py "$@"
