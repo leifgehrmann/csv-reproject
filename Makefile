@@ -10,3 +10,6 @@ test-example:
 	--to-y-header=Latitude \
 	example/myData.csv \
 	example/myData-transformed.csv
+
+test-help:
+	./csv-reproject --help
