@@ -1,5 +1,5 @@
 import click
-from pyproj import Proj, transform
+from pyproj import Proj, Transformer
 
 from csv_reproject import CsvProjReader, CsvProjWriter
 
@@ -39,6 +39,7 @@ def cli(
 
     from_proj = Proj(init=from_proj)
     to_proj = Proj(init=to_proj)
+    transformer = Transformer.from_proj(from_proj, to_proj)
 
     with open(input_filename) as input_file, \
             open(output_filename, 'w') as output_file:
@@ -62,13 +63,12 @@ def cli(
 
         for csv_proj_row in reader.read_proj_rows():
             new_x, new_y = [None, None]
-            if csv_proj_row.x is not None and csv_proj_row.x is not None:
-                new_x, new_y = transform(
-                    from_proj,
-                    to_proj,
+            if csv_proj_row.x is not None and csv_proj_row.y is not None:
+                new_x, new_y = transformer.transform(
                     csv_proj_row.x,
                     csv_proj_row.y
                 )
+
             writer.write_row(csv_proj_row.row, new_x, new_y)
 
 
