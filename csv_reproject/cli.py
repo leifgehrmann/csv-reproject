@@ -18,17 +18,19 @@ import click
               help='The column name to store the reprojected X value.')
 @click.option('--to-y-header', default='Y',
               help='The column name to store the reprojected Y value.')
-@click.argument('filename')
+@click.argument('input-filename')
+@click.argument('output-filename')
 def cli(
-        from_proj,
-        from_x_column,
-        from_y_column,
-        from_x_format,
-        from_y_format,
-        to_proj,
-        to_x_header,
-        to_y_header,
-        filename
+        from_proj: str,
+        from_x_column: str,
+        from_y_column: str,
+        from_x_format: str,
+        from_y_format: str,
+        to_proj: str,
+        to_x_header: str,
+        to_y_header: str,
+        input_filename: str,
+        output_filename: str
 ):
     """Reproject a CSV from one Coordinate Reference System to another."""
     print(
@@ -40,7 +42,8 @@ def cli(
         to_proj,
         to_x_header,
         to_y_header,
-        filename
+        input_filename,
+        output_filename
     )
 
 
